@@ -1,5 +1,5 @@
 {
-	"name": "safeasync",
+	"name": "@zeny/safe-async",
 	"description": "A clean, type-safe utility for handling async operations without try-catch blocks. Returns Go-style [error, data] tuples with optional custom logging.",
 	"version": "1.0.0",
 	"keywords": [
@@ -18,12 +18,12 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/alexis-bize/safeasync"
+		"url": "https://github.com/alexis-bize/safe-async"
 	},
 	"bugs": {
-		"url": "https://github.com/alexis-bize/safeasync/issues"
+		"url": "https://github.com/alexis-bize/safe-async/issues"
 	},
-	"homepage": "https://github.com/alexis-bize/safeasync#readme",
+	"homepage": "https://github.com/alexis-bize/safe-async#readme",
 	"type": "commonjs",
 	"main": "./dist/index.js",
 	"module": "./dist/index.js",

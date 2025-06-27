@@ -1,4 +1,4 @@
-# safeasync
+# safe-async
 
 A clean, type-safe utility for handling async operations without try-catch blocks. Returns Go-style `[error, data]` tuples with optional custom logging.
 
@@ -31,13 +31,13 @@ if (err !== null) {
 ## Installation
 
 ```bash
-npm install safeasync
+npm install @zeny/safe-async
 ```
 
 ## Basic Usage
 
 ```typescript
-import { safeAsync } from 'safeasync';
+import { safeAsync } from '@zeny/safe-async';
 
 async function example() {
   // Basic usage
@@ -118,7 +118,7 @@ async function processUser(userId: string) {
 For common fetch operations, you can create a simple wrapper:
 
 ```typescript
-import { safeAsync, SafeAsyncOptions, SafeAsyncResult } from 'safeasync';
+import { safeAsync, SafeAsyncOptions, SafeAsyncResult } from '@zeny/safe-async';
 
 export const safeFetch = async <T = any>(
   url: string,
