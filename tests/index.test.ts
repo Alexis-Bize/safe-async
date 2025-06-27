@@ -7,6 +7,31 @@ describe('safeAsync', () => {
     expect(result).toEqual([null, 'success']);
   });
 
+describe('safeAsync with real network requests', () => {
+  it('should fetch google.com successfully', async () => {
+    const [err, res] = await safeAsync(fetch('https://google.com'));
+    expect(err).toBeNull();
+    expect(res).toBeDefined();
+    if (res) {
+      expect(res.ok).toBe(true);
+      const text = await res.text();
+      expect(typeof text).toBe('string');
+      expect(text.length).toBeGreaterThan(0);
+    }
+  });
+
+  it('should fail to fetch invalid.domain', async () => {
+    const [err, res] = await safeAsync(fetch('http://invalid.domain'));
+    console.log(err, res)
+    expect(res).toBeNull();
+    expect(err).toBeTruthy();
+    expect(err).toBeTruthy();
+    expect(typeof err?.name).toBe('string');
+    expect(typeof err?.message).toBe('string');
+    expect(['TypeError', 'FetchError']).toContain(err?.name);
+  });
+});
+
   it('should handle a rejected promise', async () => {
     const error = new Error('fail');
     const promise = Promise.reject(error);
