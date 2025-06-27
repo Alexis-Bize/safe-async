@@ -1,0 +1,19 @@
+{
+	"compilerOptions": {
+		"target": "es2020",
+		"module": "commonjs",
+		"outDir": "./dist",
+		"strict": true,
+		"sourceMap": false,
+		"removeComments": false,
+		"declaration": true,
+		"skipLibCheck": true,
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"noUncheckedIndexedAccess": true,
+		"noImplicitOverride": true,
+		"stripInternal": true
+	},
+	"include": ["./src/**/*.ts", "./tests/**/*.ts"],
+	"exclude": ["./node_modules", "./dist", "./tests/**/*.ts"]
+}
