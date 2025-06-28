@@ -127,9 +127,9 @@ describe('safeAsync', () => {
       const authError = new Error('401 Unauthorized');
 
       const processError = jest.fn().mockImplementation((err: Error) => {
-        if (err.message.includes('401')) {
+        if (err.message.includes('401') === true) {
           return null; // Suppress auth errors
-        } else if (err.message.includes('network')) {
+        } else if (err.message.includes('network') === true) {
           return new Error('Connection failed'); // Transform network errors
         } else return err; // Keep other errors as-is
       });

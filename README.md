@@ -107,9 +107,9 @@ const [err, data] = await safeAsync(fetchData(), {
 // Transform errors and suppress logging for specific cases
 const [err, data] = await safeAsync(fetchData(), {
   processError: err => {
-    if (err.message.includes('401')) {
+    if (err.message.includes('401') === true) {
       return null; // Suppress logging for auth errors
-    } else if (err.message.includes('network')) {
+    } else if (err.message.includes('network') === true) {
       return new Error('Network connection failed'); // Transform network errors
     } else return err; // Keep other errors as-is
   },
