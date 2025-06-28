@@ -66,7 +66,7 @@ async function example() {
 
 ```typescript
 type SafeAsyncOptions = {
-  silent?: boolean; // Default: false (error logging enabled)
+  silent?: boolean; // Default: true (no error logging)
   logger?: (err: Error) => void; // Custom logger function
   processError?: (err: Error) => Error | null; // Transform or suppress errors
 };
@@ -74,7 +74,7 @@ type SafeAsyncOptions = {
 
 ### Option Details
 
-- **`silent`**: When `true`, suppresses all error logging. Default: `false`
+- **`silent`**: Suppresses all error logging. Default: `true`
 - **`logger`**: Custom function to handle error logging. Default: `console.error`
 - **`processError`**: Function to transform errors or suppress logging by returning `null`
 
@@ -109,11 +109,9 @@ const [err, data] = await safeAsync(fetchData(), {
   processError: err => {
     if (err.message.includes('401')) {
       return null; // Suppress logging for auth errors
-    }
-    if (err.message.includes('network')) {
+    } else if (err.message.includes('network')) {
       return new Error('Network connection failed'); // Transform network errors
-    }
-    return err; // Keep other errors as-is
+    } else return err; // Keep other errors as-is
   },
 });
 ```
@@ -125,7 +123,7 @@ const [err, data] = await safeAsync(fetchData(), {
 const [err, data] = await safeAsync(fetchData(), {
   processError: err => {
     const isAuthError = err.message.includes('401') || err.message.includes('Unauthorized');
-    return isAuthError ? null : err;
+    return isAuthError === true ? null : err;
   },
 });
 ```
@@ -135,13 +133,19 @@ const [err, data] = await safeAsync(fetchData(), {
 ```typescript
 async function processUser(userId: string) {
   const [userError, user] = await safeAsync(getUser(userId));
-  if (userError !== null) return { error: 'User not found' };
+  if (userError !== null) {
+    return { error: 'User not found' };
+  }
 
   const [postsError, posts] = await safeAsync(getUserPosts(user.id));
-  if (postsError !== null) return { error: 'Failed to load posts' };
+  if (postsError !== null) {
+    return { error: 'Failed to load posts' };
+  }
 
   const [updateError] = await safeAsync(updateUserStats(user.id, posts.length));
-  if (updateError !== null) return { error: 'Failed to update stats' };
+  if (updateError !== null) {
+    return { error: 'Failed to update stats' };
+  }
 
   return { success: true, user, postsCount: posts.length };
 }

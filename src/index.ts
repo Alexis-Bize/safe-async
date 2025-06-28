@@ -38,12 +38,12 @@ export type SafeAsyncOptions = {
  * Wraps a Promise to return a tuple-based result instead of throwing errors.
  *
  * @param {Promise<R>} fn - The promise to wrap
- * @param {SafeAsyncOptions} [options] - Configuration options
+ * @param {SafeAsyncOptions} [options={ silent: true }] - Configuration options
  * @returns {Promise<SafeAsyncResult<R, E>>} A tuple of [err, null] or [null, result]
  */
 export const safeAsync = async <R, E extends Error = Error>(
   fn: Promise<R>,
-  options: SafeAsyncOptions = {},
+  options: SafeAsyncOptions = { silent: true },
 ): Promise<SafeAsyncResult<R, E>> => {
   try {
     const result = await fn;
