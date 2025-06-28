@@ -66,10 +66,17 @@ async function example() {
 
 ```typescript
 type SafeAsyncOptions = {
-  silent?: boolean; // Default: true (no error logging)
+  silent?: boolean; // Default: false (error logging enabled)
   logger?: (err: Error) => void; // Custom logger function
+  processError?: (err: Error) => Error | null; // Transform or suppress errors
 };
 ```
+
+### Option Details
+
+- **`silent`**: When `true`, suppresses all error logging. Default: `false`
+- **`logger`**: Custom function to handle error logging. Default: `console.error`
+- **`processError`**: Function to transform errors or suppress logging by returning `null`
 
 ## Examples
 
@@ -91,6 +98,35 @@ console.log('User found:', user.name);
 const [err, data] = await safeAsync(fetchData(), {
   silent: false,
   logger: err => console.warn('API Error:', err),
+});
+```
+
+### With Error Processing
+
+```typescript
+// Transform errors and suppress logging for specific cases
+const [err, data] = await safeAsync(fetchData(), {
+  processError: err => {
+    if (err.message.includes('401')) {
+      return null; // Suppress logging for auth errors
+    }
+    if (err.message.includes('network')) {
+      return new Error('Network connection failed'); // Transform network errors
+    }
+    return err; // Keep other errors as-is
+  },
+});
+```
+
+### Conditional Error Handling
+
+```typescript
+// Only log non-401 errors
+const [err, data] = await safeAsync(fetchData(), {
+  processError: err => {
+    const isAuthError = err.message.includes('401') || err.message.includes('Unauthorized');
+    return isAuthError ? null : err;
+  },
 });
 ```
 
