@@ -68,8 +68,15 @@ async function example() {
 type SafeAsyncOptions = {
   silent?: boolean; // Default: true (no error logging)
   logger?: (err: Error) => void; // Custom logger function
+  processError?: (err: Error) => Error | null; // Transform or suppress errors
 };
 ```
+
+### Option Details
+
+- **`silent`**: Suppresses all error logging. Default: `true`
+- **`logger`**: Custom function to handle error logging. Default: `console.error`
+- **`processError`**: Function to transform errors or suppress logging by returning `null`
 
 ## Examples
 
@@ -94,18 +101,51 @@ const [err, data] = await safeAsync(fetchData(), {
 });
 ```
 
+### With Error Processing
+
+```typescript
+// Transform errors and suppress logging for specific cases
+const [err, data] = await safeAsync(fetchData(), {
+  processError: err => {
+    if (err.message.includes('401') === true) {
+      return null; // Suppress logging for auth errors
+    } else if (err.message.includes('network') === true) {
+      return new Error('Network connection failed'); // Transform network errors
+    } else return err; // Keep other errors as-is
+  },
+});
+```
+
+### Conditional Error Handling
+
+```typescript
+// Only log non-401 errors
+const [err, data] = await safeAsync(fetchData(), {
+  processError: err => {
+    const isAuthError = err.message.includes('401') || err.message.includes('Unauthorized');
+    return isAuthError === true ? null : err;
+  },
+});
+```
+
 ### Multiple Operations
 
 ```typescript
 async function processUser(userId: string) {
   const [userError, user] = await safeAsync(getUser(userId));
-  if (userError !== null) return { error: 'User not found' };
+  if (userError !== null) {
+    return { error: 'User not found' };
+  }
 
   const [postsError, posts] = await safeAsync(getUserPosts(user.id));
-  if (postsError !== null) return { error: 'Failed to load posts' };
+  if (postsError !== null) {
+    return { error: 'Failed to load posts' };
+  }
 
   const [updateError] = await safeAsync(updateUserStats(user.id, posts.length));
-  if (updateError !== null) return { error: 'Failed to update stats' };
+  if (updateError !== null) {
+    return { error: 'Failed to update stats' };
+  }
 
   return { success: true, user, postsCount: posts.length };
 }
